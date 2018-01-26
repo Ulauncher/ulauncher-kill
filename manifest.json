@@ -1,0 +1,16 @@
+{
+    "manifest_version": "2",
+    "api_version": "1",
+    "name": "process-killer",
+    "description": "Process Killer",
+    "developer_name": "Aleksandr Gornostal",
+    "icon": "images/icon.png",
+    "preferences": [
+        {
+            "id": "pkiller_kw",
+            "type": "keyword",
+            "name": "Process Killer",
+            "default_value": "kill"
+        }
+    ]
+}
