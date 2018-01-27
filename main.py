@@ -42,7 +42,7 @@ class KeywordQueryEventListener(EventListener):
 
     def generate_results(self, event):
         for (pid, cpu, cmd) in get_process_list():
-            name = '%s %%CPU %s' % (cpu, cmd) if cpu > 1 else cmd
+            name = '[%s%% CPU] %s' % (cpu, cmd) if cpu > 1 else cmd
             on_enter = {'alt_enter': False, 'pid': pid, 'cmd': cmd}
             on_alt_enter = on_enter.copy()
             on_alt_enter['alt_enter'] = True
@@ -68,9 +68,10 @@ class ItemEnterEventListener(EventListener):
         try:
             check_call(cmd) == 0
             extension.show_notification("Done", "It's dead now", icon=dead_icon)
-        except CalledProcessError:
-            extension.show_notification("Sorry", "I couldn't do that :(")
-        except Exception:
+        except CalledProcessError as e:
+            extension.show_notification("Error", "'kill' returned code %s" % e.returncode)
+        except Exception as e:
+            logger.error('%s: %s' % (type(e).__name__, e.message))
             extension.show_notification("Error", "Check the logs")
             raise
 
@@ -81,7 +82,7 @@ class ItemEnterEventListener(EventListener):
             on_enter = data.copy()
             on_enter['alt_enter'] = False
             on_enter['signal'] = sig
-            result_items.append(ExtensionSmallResultItem(icon=dead_icon,
+            result_items.append(ExtensionSmallResultItem(icon=ext_icon,
                                                          name=name,
                                                          highlightable=False,
                                                          on_enter=ExtensionCustomAction(on_enter)))
