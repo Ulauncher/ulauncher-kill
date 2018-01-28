@@ -31,8 +31,9 @@ class ProcessKillerExtension(Extension):
 
     def show_notification(self, title, text=None, icon=ext_icon):
         logger.debug('Show notification: %s' % text)
+        icon_full_path = os.path.join(os.path.dirname(__file__), icon)
         Notify.init("KillerExtension")
-        Notify.Notification.new(title, text, icon).show()
+        Notify.Notification.new(title, text, icon_full_path).show()
 
 
 class KeywordQueryEventListener(EventListener):
