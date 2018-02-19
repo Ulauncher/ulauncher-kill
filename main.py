@@ -5,7 +5,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Notify', '0.7')
 
-from locale import setlocale, LC_NUMERIC
+from locale import atof, setlocale, LC_NUMERIC
 from gi.repository import Notify
 from itertools import islice
 from subprocess import Popen, PIPE, check_call, CalledProcessError
@@ -116,7 +116,7 @@ def get_process_list():
             continue
 
         pid = col[0]
-        cpu = float(col[8])
+        cpu = atof(col[8])
         cmd = ' '.join(col[11:])
         if 'top -bn' in cmd:
             continue
