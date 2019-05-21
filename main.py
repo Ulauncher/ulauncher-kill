@@ -74,7 +74,7 @@ class ItemEnterEventListener(EventListener):
         except CalledProcessError as e:
             extension.show_notification("Error", "'kill' returned code %s" % e.returncode)
         except Exception as e:
-            logger.error('%s: %s' % (type(e).__name__, e.message))
+            logger.error('%s: %s' % (type(e).__name__, e))
             extension.show_notification("Error", "Check the logs")
             raise
 

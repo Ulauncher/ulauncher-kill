@@ -1,6 +1,5 @@
 {
-    "manifest_version": "2",
-    "api_version": "1",
+    "required_api_version": "^2.0.0",
     "name": "Process Killer",
     "description": "This can kill user processes",
     "developer_name": "Aleksandr Gornostal",
