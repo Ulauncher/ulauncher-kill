@@ -106,7 +106,7 @@ def get_process_list():
     env = os.environ.copy()
     env['COLUMNS'] = '200'
     process = Popen(['top', '-bn1', '-cu', os.getenv('USER')], stdout=PIPE, env=env)
-    out = process.communicate()[0]
+    out = process.communicate()[0].decode('utf8')
     for line in out.split('\n'):
         col = line.split()
         try:
