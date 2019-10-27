@@ -8,7 +8,7 @@ gi.require_version('Notify', '0.7')
 from locale import atof, setlocale, LC_NUMERIC
 from gi.repository import Notify
 from itertools import islice
-from subprocess import Popen, PIPE, check_call, CalledProcessError
+from subprocess import check_output, check_call, CalledProcessError
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.shared.event import KeywordQueryEvent, ItemEnterEvent
@@ -105,8 +105,9 @@ def get_process_list():
     """
     env = os.environ.copy()
     env['COLUMNS'] = '200'
-    process = Popen(['top', '-bn1', '-cu', os.getenv('USER')], stdout=PIPE, env=env)
-    out = process.communicate()[0].decode('utf8')
+    out = check_output(['ps', '-eo', 'pid,%cpu,cmd', '--sort', '-%cpu'], env=env).decode('utf8')
+#    out = process.communicate()[0].decode('utf8')
+    print(out)
     for line in out.split('\n'):
         col = line.split()
         try:
@@ -116,8 +117,8 @@ def get_process_list():
             continue
 
         pid = col[0]
-        cpu = atof(col[8])
-        cmd = ' '.join(col[11:])
+        cpu = atof(col[1])
+        cmd = ' '.join(col[2:])
         if 'top -bn' in cmd:
             continue
 
