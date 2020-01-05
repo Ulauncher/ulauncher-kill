@@ -106,8 +106,6 @@ def get_process_list():
     env = os.environ.copy()
     env['COLUMNS'] = '200'
     out = check_output(['ps', '-eo', 'pid,%cpu,cmd', '--sort', '-%cpu'], env=env).decode('utf8')
-#    out = process.communicate()[0].decode('utf8')
-    print(out)
     for line in out.split('\n'):
         col = line.split()
         try:
