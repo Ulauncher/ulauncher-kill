@@ -3,7 +3,7 @@
     "name": "Process Killer",
     "description": "This can kill user processes",
     "developer_name": "Aleksandr Gornostal",
-    "icon": "images/icon.png",
+    "icon": "images/kill.png",
     "preferences": [
         {
             "id": "pkiller_kw",
