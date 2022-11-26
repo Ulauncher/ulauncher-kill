@@ -18,7 +18,9 @@ from ulauncher.api.shared.action.ExtensionCustomAction import ExtensionCustomAct
 
 
 logger = logging.getLogger(__name__)
-ext_icon = 'images/icon.png'
+kill_icon = 'images/kill.png'
+pause_icon = 'images/pause.png'
+play_icon = 'images/play.png'
 exec_icon = 'images/executable.png'
 dead_icon = 'images/dead.png'
 
@@ -31,7 +33,7 @@ class ProcessKillerExtension(Extension):
         self.subscribe(ItemEnterEvent, ItemEnterEventListener())
         setlocale(LC_NUMERIC, '')  # set to OS default locale;
 
-    def show_notification(self, title, text=None, icon=ext_icon):
+    def show_notification(self, title, text=None, icon=kill_icon):
         logger.debug('Show notification: %s' % text)
         icon_full_path = os.path.join(os.path.dirname(__file__), icon)
         Notify.init("KillerExtension")
@@ -70,7 +72,15 @@ class ItemEnterEventListener(EventListener):
 
         try:
             check_call(cmd) == 0
-            extension.show_notification("Done", "It's dead now", icon=dead_icon)
+            icon = ""
+            if signal == "STOP":
+                text = "It's paused now"
+            elif signal == "CONT":
+                text = "It's alive now"
+            else:
+                text = "It's dead now"
+                icon = dead_icon
+            extension.show_notification("Done", text, icon=icon)
         except CalledProcessError as e:
             extension.show_notification("Error", "'kill' returned code %s" % e.returncode)
         except Exception as e:
@@ -80,12 +90,18 @@ class ItemEnterEventListener(EventListener):
 
     def show_signal_options(self, data):
         result_items = []
-        options = [('TERM', '15 TERM (default)'), ('KILL', '9 KILL'), ('HUP', '1 HUP')]
-        for sig, name in options:
+        options = [
+            ('TERM', '15 TERM (default)', kill_icon),
+            ('KILL', '9 KILL', kill_icon),
+            ('HUP', '1 HUP', kill_icon),
+            ('STOP', '19 STOP (pause)', pause_icon),
+            ('CONT', '18 CONT (resume)', play_icon),
+        ]
+        for sig, name, icon in options:
             on_enter = data.copy()
             on_enter['alt_enter'] = False
             on_enter['signal'] = sig
-            result_items.append(ExtensionSmallResultItem(icon=ext_icon,
+            result_items.append(ExtensionSmallResultItem(icon=icon,
                                                          name=name,
                                                          highlightable=False,
                                                          on_enter=ExtensionCustomAction(on_enter)))
